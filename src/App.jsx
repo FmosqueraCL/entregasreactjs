@@ -1,16 +1,33 @@
 import React from 'react';
-import Navbar from './components/navbar';
-import ItemListContainer from './components/ItemListcontainer';
-import 'materialize-css/dist/css/materialize.min.css';
-
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Navbar from './components/Navbar';
+import productos from './Productos';
+import ItemListContainer from './components/ItemListContainer';
+import ItemDetailContainer from './components/ItemDetailContainer';
 
 function App() {
   return (
-    <div>
-      <Navbar/>
-      <ItemListContainer greeting="Moe-Shop Store" />
-    </div>
+    <Router>
+      <div>
+        <Navbar />
+        <Routes>
+          <Route
+            path="/"
+            element={<ItemListContainer productos={productos} />}
+          />
+          <Route
+            path="/category/:id"
+            element={<ItemListContainer productos={productos} />}
+          />
+          <Route
+            path="/item/:id"
+            element={<ItemDetailContainer productos={productos} />}
+          />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 
 export default App;
+
