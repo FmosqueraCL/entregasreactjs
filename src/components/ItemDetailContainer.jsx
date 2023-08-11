@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import ItemDetail from './ItemDetail';
 
-function ItemDetailContainer({ productos }) {
+function ItemDetailContainer({ productos, onAddToCart }) {
   const [producto, setProducto] = useState(null);
   const { id } = useParams();
 
@@ -14,7 +14,7 @@ function ItemDetailContainer({ productos }) {
   return (
     <div>
       {producto ? (
-        <ItemDetail producto={producto} />
+        <ItemDetail producto={producto} onAddToCart={onAddToCart} />
       ) : (
         <p>Cargando información del producto...</p>
       )}
@@ -23,3 +23,4 @@ function ItemDetailContainer({ productos }) {
 }
 
 export default ItemDetailContainer;
+

@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import CartWidget from './CartWidget';
 
-function Navbar() {
+function Navbar({ cartItemCount, onShowCart }) {
   const categories = ['Vestuario', 'Accesorios', 'Decoración'];
   return (
     <nav className="nav-wrapper">
@@ -19,12 +19,14 @@ function Navbar() {
           </li>
         ))}
         <li>
-          <CartWidget />
+          <CartWidget cartItemCount={cartItemCount} onShowCart={onShowCart} />
         </li>
       </ul>
     </nav>
   );
 }
 export default Navbar;
+
+
 
 
