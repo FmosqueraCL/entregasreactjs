@@ -1,29 +1,35 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import { collection, getDocs, query, where } from 'firebase/firestore';
+import { db } from '../main';
 import ItemList from './ItemList';
 
-function ItemListContainer({ productos }) {
-  const [productosFiltrados, setProductosFiltrados] = useState([]);
-  const { id } = useParams();
+function ItemListContainer() {
+  const [items, setItems] = useState([]);
+  const { categoryId } = useParams();
 
   useEffect(() => {
-    if (id) {
-      const productosDeCategoria = productos.filter(
-        (p) => p.categoria === id
-      );
-      setProductosFiltrados(productosDeCategoria);
-    } else {
-      setProductosFiltrados(productos);
-    }
-  }, [id, productos]);
+    const getItems = async () => {
+      let itemCollection = collection(db, 'item');
+      if (categoryId) {
+        itemCollection = query(itemCollection, where('categoryld', '==', categoryId));
+      }
+      const itemSnapshot = await getDocs(itemCollection);
+      const itemList = itemSnapshot.docs.map((doc) => doc.data());
+      setItems(itemList);
+    };
+    getItems();
+  }, [categoryId]);
 
   return (
-    <div>
-      <h1>Lista de productos</h1>
-      <ItemList productos={productosFiltrados} />
+    <div className='ItemList'>
+      <ItemList items={items} />
     </div>
   );
 }
 
 export default ItemListContainer;
+
+
+
 

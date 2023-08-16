@@ -1,16 +1,20 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { CartContext } from '../context/CartContext';
 
-function CartWidget({ cartItemCount, onShowCart }) {
+function CartWidget() {
+  const { cart } = useContext(CartContext);
+  const cartItemCount = cart.reduce((total, item) => total + item.quantity, 0);
   return (
-    <div>
-      <span className="cart-icon" onClick={onShowCart}>
-        <i className="material-icons">shopping_cart</i>
-        <span className="cart-number">{cartItemCount}</span>
-      </span>
-    </div>
+    <>
+      <i className="material-icons">shopping_cart</i>
+      <span className="cart-number">({cartItemCount})</span>
+    </>
   );
 }
 
 export default CartWidget;
+
+
+
 
 

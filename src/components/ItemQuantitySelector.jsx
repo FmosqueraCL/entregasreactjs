@@ -1,17 +1,16 @@
-import React, { useState } from 'react';
+// ItemQuantitySelector.jsx
+import React from 'react';
 
-function ItemQuantitySelector({ maxQuantity }) {
-  const [quantity, setQuantity] = useState(1);
-
-  const handleIncrease = () => {
-    if (quantity < maxQuantity) {
-      setQuantity(quantity + 1);
+function ItemQuantitySelector({ quantity, onQuantityChange, maxQuantity }) {
+  const handleDecrease = () => {
+    if (quantity > 1) {
+      onQuantityChange(quantity - 1);
     }
   };
 
-  const handleDecrease = () => {
-    if (quantity > 1) {
-      setQuantity(quantity - 1);
+  const handleIncrease = () => {
+    if (quantity < maxQuantity) {
+      onQuantityChange(quantity + 1);
     }
   };
 
@@ -25,4 +24,5 @@ function ItemQuantitySelector({ maxQuantity }) {
 }
 
 export default ItemQuantitySelector;
+
 

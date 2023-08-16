@@ -1,23 +1,32 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { CartContext } from '../context/CartContext';
 
-function Brief({ items, total, onRemoveFromCart, onCheckout }) {
+function Brief() {
+  const { cart, removeItem } = useContext(CartContext);
+  const cartTotal = cart.reduce((total, item) => total + item.quantity * item.price, 0);
+  const handleRemoveItem = (id) => {
+    removeItem(id);
+  };
   return (
-    <div>
-      <h2>Resumen de compra</h2>
+    <div className='Brief'>
+      <h2>Carrito de compra</h2>
       <ul>
-        {items.map((item) => (
+        {cart.map((item) => (
           <li key={item.id}>
-            <img src={item.imagen} alt={item.nombre} width="50" height="50" />
-            {item.nombre} x {item.quantity} = ${item.precio * item.quantity}
-            <button onClick={() => onRemoveFromCart(item)}>Eliminar</button>
+            <img src={item.image} alt={item.title} />
+            {item.title} x{item.quantity} (${item.price})
+            <button onClick={() => handleRemoveItem(item.id)}>Eliminar</button>
           </li>
         ))}
       </ul>
-      <p>Total: ${total}</p>
+      <p>Total: ${cartTotal}</p>
     </div>
   );
 }
 
 export default Brief;
+
+
+
 
 

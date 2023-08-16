@@ -1,17 +1,29 @@
-import React from 'react';
+import React, { useState } from 'react';
+import ItemQuantitySelector from './ItemQuantitySelector';
+import Description from './Description';
 import AddItemButton from './AddItemButton ';
 
-function ItemDetail({ producto, onAddToCart }) {
+function ItemDetail({ producto }) {
+  const [quantity, setQuantity] = useState(1);
+
+  const handleQuantityChange = (newQuantity) => {
+    setQuantity(newQuantity);
+  };
+
   return (
-    <div className="item-detail">
-      <h1 className="item-detail__title">{producto.nombre}</h1>
-      <img className="item-detail__image" src={producto.imagen} alt={producto.nombre} />
-      <p className="item-detail__price">Precio: ${producto.precio}</p>
-      <p className="item-detail__description">Descripción: {producto.descripcion}</p>
-      <AddItemButton onAdd={() => onAddToCart(producto)} />
+    <div>
+      <h2>{producto.title}</h2>
+      <img src={producto.image} alt={producto.title} />
+      <p>Precio: ${producto.price}</p>
+      <Description description={producto.description} />
+      <ItemQuantitySelector
+        quantity={quantity}
+        onQuantityChange={handleQuantityChange}
+        maxQuantity={producto.stock}
+      />
+      <AddItemButton item={producto} quantity={quantity} />
     </div>
   );
 }
 
 export default ItemDetail;
-
