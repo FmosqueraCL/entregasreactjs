@@ -1,6 +1,8 @@
 import React, { useContext, useState } from 'react';
 import { CartContext } from '../context/CartContext';
 import Brief from './Brief';
+import { collection, addDoc } from 'firebase/firestore';
+import { db } from '../main';
 
 function Checkout() {
   const { cart, clear } = useContext(CartContext);
@@ -16,6 +18,7 @@ function Checkout() {
   const [expDateError, setExpDateError] = useState(false);
   const [cvvError, setCvvError] = useState(false);
   const cartTotal = cart.reduce((total, item) => total + item.quantity * item.price, 0);
+
   const handleEmailChange = (event) => {
     setEmail(event.target.value);
     setEmailError(false);
@@ -40,8 +43,18 @@ function Checkout() {
     setCvv(event.target.value);
     setCvvError(false);
   };
+
+  const validateEmailFormat = (email) => {
+    const emailRegex = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+    return emailRegex.test(email);
+  };
+
   const validateEmail = () => {
-    if (email !== repeatEmail) {
+    if (
+      email !== repeatEmail ||
+      !validateEmailFormat(email) ||
+      !validateEmailFormat(repeatEmail)
+    ) {
       setEmailError(true);
       return false;
     }
@@ -55,6 +68,7 @@ function Checkout() {
     }
     return true;
   };
+  
   const validateCardNumber = () => {
     if (!/^\d{16}$/.test(cardNumber)) {
       setCardNumberError(true);
@@ -62,6 +76,7 @@ function Checkout() {
     }
     return true;
   };
+  
   const validateExpDate = () => {
     if (!/^\d{2}\/\d{2}$/.test(expDate)) {
       setExpDateError(true);
@@ -69,6 +84,7 @@ function Checkout() {
     }
     return true;
   };
+  
   const validateCvv = () => {
     if (!/^\d{3}$/.test(cvv)) {
       setCvvError(true);
@@ -76,7 +92,8 @@ function Checkout() {
     }
     return true;
   };
-  const handleCheckout = () => {
+
+  const handleCheckout = async () => {
     if (
       validateEmail() &&
       validatePhone() &&
@@ -84,13 +101,25 @@ function Checkout() {
       validateExpDate() &&
       validateCvv()
     ) {
-      // Procesar el pago. 
+      // Procesar el pago.
+      const date = new Date();
+      const orderData = {
+        date: date.toLocaleDateString(),
+        time: date.toLocaleTimeString(),
+        items: cart,
+        total: cartTotal,
+      };
+      const docRef = await addDoc(collection(db, 'orders'), orderData);
       clear();
+      // Mostrar el ID de la orden al usuario.
+      alert(`Tu orden ha sido procesada con éxito. El ID de tu orden es: ${docRef.id}`);
     }
   };
+
   if (cart.length === 0) {
     return <p>Agrega productos al carro</p>;
   }
+
   return (
     <div>
       <Brief />
@@ -120,7 +149,7 @@ function Checkout() {
           Email:
           <input type="email" name="email" value={email} onChange={handleEmailChange} />
         </label>
-        {emailError && <p style={{ color: 'red' }}>Los emails no coinciden.</p>}
+        {emailError && <p style={{ color: 'red' }}>Los emails no coinciden o no son válidos.</p>}
         <br />
         <label>
           Repetir email:
@@ -131,7 +160,7 @@ function Checkout() {
             onChange={handleRepeatEmailChange}
           />
         </label>
-        {emailError && <p style={{ color: 'red' }}>Los emails no coinciden.</p>}
+        {emailError && <p style={{ color: 'red' }}>Los emails no coinciden o no son válidos.</p>}
         <br />
         <label>
           Teléfono:
@@ -178,5 +207,7 @@ function Checkout() {
 }
 
 export default Checkout;
+
+
 
 
